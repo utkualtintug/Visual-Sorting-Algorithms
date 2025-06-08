@@ -4,10 +4,15 @@ import random
 canvas_width = 450
 canvas_height = 450
 speed = 50
-tempSpeed = 0
+is_paused = False
+is_sorting = False
+current_i = 0
+current_j = 0
+
 
 win = Tk()
-win.geometry("500x600")
+win.title("Visual Sorting Algorithms")
+win.geometry("500x650")
 
 canvas = Canvas(win, width=450, height=450, bg="gray")
 canvas.grid(row=0, column=0, padx=25, pady=10)
@@ -34,9 +39,18 @@ def generate(highlight_indices=None, color_override=None):
         
 
 def bubble_step(i,j):
+    global is_paused, current_i, current_j, is_sorting
     n = len(barHeight)
+    
+    if is_paused:
+        current_i = i
+        current_j = j
+        is_sorting = False
+        return
+
     if i >= len(barHeight) - 1:
         generate(color_override="#5cb85c")
+        is_sorting = False
         return
 
     if j < n - i - 1:
@@ -49,6 +63,11 @@ def bubble_step(i,j):
 
 
 def bubble():
+    global is_paused, is_sorting
+    if is_sorting:
+        return
+    is_paused = False
+    is_sorting = True
     bubble_step(0, 0)
 
 
@@ -64,19 +83,18 @@ def slower():
         speed += 5
 
 
-#FIXME - Fix the speed problem!
-#* continueSort() does work (it changes speed) — but it has no visible effect because the program is still stuck waiting on the long delay that was already scheduled.
 def stop():
-    global speed
-    global tempSpeed
-    tempSpeed = speed
-    speed = 1000000000
+    global is_paused
+    is_paused = True
 
 
 def continueSort():
-    global speed
-    global tempSpeed
-    speed = tempSpeed
+    global is_paused, is_sorting
+    if is_sorting:
+        return
+    is_paused = False        
+    is_sorting = True
+    bubble_step(current_i, current_j)
 
 
 main_frame = Frame(win)
