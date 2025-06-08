@@ -64,6 +64,7 @@ def bubble_step(i,j):
 
 def bubble():
     global is_paused, is_sorting
+    switch()
     if is_sorting:
         return
     is_paused = False
@@ -95,6 +96,12 @@ def continueSort():
     is_paused = False        
     is_sorting = True
     bubble_step(current_i, current_j)
+
+def switch():
+    if sort_button["state"] == NORMAL:
+        sort_button["state"] = DISABLED
+    else:
+        sort_button["state"] = NORMAL
 
 
 main_frame = Frame(win)
