@@ -23,7 +23,7 @@ A Python application that visualizes sorting algorithms using Tkinter GUI. This 
 
 ## Screenshots
 
-![Sorting visualization in action](/img.png)
+![Sorting visualization in action](assets/img.png)
 
 
 ## Visual Feedback
@@ -47,7 +47,7 @@ A Python application that visualizes sorting algorithms using Tkinter GUI. This 
 ## Running the Application
 
 ```
-python main.py
+python3 main.py
 ```
 
 This project provides an educational tool for understanding sorting algorithms through visual representation, making it easier to grasp the concepts of different sorting techniques.
