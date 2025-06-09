@@ -22,8 +22,8 @@ A Python application that visualizes sorting algorithms using Tkinter GUI. This 
 5. Adjust the sorting speed using the ➖ (slower) and ➕ (faster) buttons
 
 ## Screenshots
-
-![Sorting visualization in action](assets/img.png)
+![Generated bars](assets/img.png)
+![Sorting visualization in action](assets/img2.png)
 
 
 ## Visual Feedback
