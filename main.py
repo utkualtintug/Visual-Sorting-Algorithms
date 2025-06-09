@@ -91,7 +91,7 @@ def bubble_step(i,j):
 
 
 def insertion_step(i, j):
-    global is_paused, current_i, current_j, is_sorting
+    global is_paused, current_i, current_j, is_sorting, insertion_key
     
     if is_paused:
         current_i = i
@@ -105,14 +105,20 @@ def insertion_step(i, j):
         sort_button["state"] = NORMAL
         return
 
-#FIXME - #* Fix and rewrite the algorithm's logic. Try to learn.
+    if insertion_key is None:
+        insertion_key = barHeight[i]
+        j = i - 1
 
-    for i in range(1, len(barHeight)):
-        j = i
-        while j > 0 and barHeight[j - 1] > barHeight[j]:
-            barHeight[j], barHeight[j - 1] = barHeight[j - 1], barHeight[j]
-            j = j - 1
-
+    if j >= 0 and barHeight[j] > insertion_key:
+        barHeight[j + 1] = barHeight[j]
+        generate(highlight_indices=[j, j + 1])
+        canvas.after(speed, lambda: insertion_step(i, j - 1))
+    else:
+        barHeight[j + 1] = insertion_key
+        insertion_key = None
+        generate(highlight_indices=[j + 1])
+        canvas.after(speed, lambda: insertion_step(i + 1, i))
+        
 def faster():
     global speed
     if speed > 5:
@@ -154,6 +160,7 @@ def reset():
         sort_button["state"] = NORMAL
     barHeight.clear()
     canvas.delete("all")
+
 
 main_frame = Frame(win)
 main_frame.grid(row=1, column=0, pady=10)
