@@ -99,7 +99,7 @@ def insertion_step(i, j):
         is_sorting = False
         return
 
-    if i >= len(barHeight) - 1:
+    if i >= len(barHeight):
         generate(color_override="#5cb85c")
         is_sorting = False
         sort_button["state"] = NORMAL
@@ -142,7 +142,11 @@ def continueSort():
         return
     is_paused = False        
     is_sorting = True
-    bubble_step(current_i, current_j)
+
+    if selected_algo.get() == "Bubble":
+        bubble_step(current_i, current_j)
+    elif selected_algo.get() == "Insertion":
+        insertion_step(current_i, current_j)
 
 def switch():
     if sort_button["state"] == NORMAL:
@@ -152,9 +156,11 @@ def switch():
 
 
 def reset():
-    global barHeight, is_reseted,is_paused
+    global barHeight, is_reseted,is_paused, insertion_key
     is_reseted = True
     is_paused = True
+    insertion_key = None
+
     reset_button["state"] = DISABLED
     if is_sorting:
         sort_button["state"] = NORMAL
