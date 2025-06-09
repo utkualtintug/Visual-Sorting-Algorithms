@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 import random
 
 canvas_width = 450
@@ -9,28 +10,44 @@ is_sorting = False
 is_reseted = False
 current_i = 0
 current_j = 0
+numOfBar = 0
 barHeight = []
 insertion_key = None
 
 
 win = Tk()
 win.title("Visual Sorting Algorithms")
-win.geometry("500x650")
+win.geometry("510x700")
 
 canvas = Canvas(win, width=450, height=450, bg="gray")
 canvas.grid(row=0, column=0, padx=25, pady=10)
 
 def randomNumber():
-    global barHeight, is_reseted
+    global barHeight, is_reseted, numOfBar
     is_reseted = False
-    aList = [random.randint(10,400) for _ in range(50)]
-    barHeight = aList
-    return barHeight
 
+    try:
+        numOfBar = int(num_of_bar.get())
+        generate_button["state"] = DISABLED
+        aList = [random.randint(10,400) for _ in range(numOfBar)]
+        barHeight = aList
+        return barHeight
+    except ValueError:
+        messagebox.showerror("Input Error","Please enter a number!")
+        barHeight = [] 
+        return []
+    
 def generate(highlight_indices=None, color_override=None):
-    global barHeight
+    global barHeight, is_sorting
+
+    if is_sorting == False:
+        reset()
+
     if len(barHeight) == 0:
         randomNumber() 
+
+    if len(barHeight) == 0:
+        return
         
     reset_button["state"] = NORMAL
     canvas.delete("all")
@@ -79,6 +96,8 @@ def bubble_step(i,j):
         generate(color_override="#5cb85c")
         is_sorting = False
         sort_button["state"] = NORMAL
+        algo_menu["state"] = NORMAL
+        generate_button["state"] = NORMAL
         return
 
     if j < n - i - 1:
@@ -103,6 +122,8 @@ def insertion_step(i, j):
         generate(color_override="#5cb85c")
         is_sorting = False
         sort_button["state"] = NORMAL
+        algo_menu["state"] = NORMAL
+        generate_button["state"] = NORMAL
         return
 
     if insertion_key is None:
@@ -150,6 +171,7 @@ def continueSort():
 
 def switch():
     if sort_button["state"] == NORMAL:
+        algo_menu["state"] = DISABLED
         sort_button["state"] = DISABLED
     else:
         sort_button["state"] = NORMAL
@@ -162,17 +184,28 @@ def reset():
     insertion_key = None
 
     reset_button["state"] = DISABLED
+    generate_button["state"] = NORMAL
+    algo_menu["state"] = NORMAL
     if is_sorting:
         sort_button["state"] = NORMAL
     barHeight.clear()
     canvas.delete("all")
 
+input_frame = Frame(win)
+input_frame.grid(row=1, column=0, pady=10)
+
+num_of_bar_text = Label(input_frame ,text="Number of bars:")
+num_of_bar_text.pack(side=LEFT, padx=5)
+
+num_of_bar = Entry(input_frame, width=10)
+num_of_bar.pack(side=LEFT, padx=5)
+num_of_bar.focus()
+
+generate_button = Button(input_frame, text="Generate", command=generate)
+generate_button.pack(side=LEFT, padx=5)
 
 main_frame = Frame(win)
-main_frame.grid(row=1, column=0, pady=10)
-
-generate_button = Button(main_frame, text="Generate", command=generate)
-generate_button.pack(side=LEFT, padx=5)
+main_frame.grid(row=2, column=0, pady=10)
 
 sort_button = Button(main_frame, text="Sort", command=sorting)
 sort_button.pack(side=LEFT, padx=5)
@@ -184,7 +217,7 @@ algo_menu = OptionMenu(main_frame, selected_algo, "Bubble", "Insertion")
 algo_menu.pack(side=LEFT, padx=5)
 
 button_frame = Frame(win)
-button_frame.grid(row=2, column=0, pady=10)
+button_frame.grid(row=3, column=0, pady=10)
 
 slower_button = Button(button_frame, text="➖", command=slower)
 slower_button.pack(side=LEFT, padx=5)
@@ -193,7 +226,7 @@ faster_button = Button(button_frame, text="➕", command=faster)
 faster_button.pack(side=LEFT, padx=5)
 
 run_frame = Frame(win)
-run_frame.grid(row=3, column=0, pady=10)
+run_frame.grid(row=4, column=0, pady=10)
 
 stop_button = Button(run_frame, text="⏹️", command=stop)
 stop_button.pack(side=LEFT, padx=5)
