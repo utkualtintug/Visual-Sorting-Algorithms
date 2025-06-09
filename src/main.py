@@ -13,7 +13,7 @@ current_j = 0
 numOfBar = 0
 barHeight = []
 insertion_key = None
-
+selection_key = None
 
 win = Tk()
 win.title("Visual Sorting Algorithms")
@@ -80,6 +80,8 @@ def sorting():
         bubble_step(0, 0)
     elif selected_algo.get() == "Insertion":
         insertion_step(1, 0)
+    elif selected_algo.get() == "Selection":
+        selection_step(0, 1)
 
 
 def bubble_step(i,j):
@@ -140,6 +142,41 @@ def insertion_step(i, j):
         generate(highlight_indices=[j + 1])
         canvas.after(speed, lambda: insertion_step(i + 1, i))
         
+
+def selection_step(i, j):
+    global is_paused, current_i, current_j, is_sorting, selection_key
+    
+    if is_paused:
+        current_i = i
+        current_j = j
+        is_sorting = False
+        return
+
+    if i >= len(barHeight):
+        generate(color_override="#5cb85c")
+        is_sorting = False
+        sort_button["state"] = NORMAL
+        algo_menu["state"] = NORMAL
+        generate_button["state"] = NORMAL
+        return
+
+    if selection_key is None:
+        selection_key = i
+        
+    if j < len(barHeight):
+        if barHeight[j] < barHeight[selection_key]:
+            selection_key = j
+        
+        generate(highlight_indices=[i, j, selection_key])
+        canvas.after(speed, lambda: selection_step(i, j + 1))
+
+    else:
+            barHeight[i], barHeight[selection_key] = barHeight[selection_key], barHeight[i]
+            generate(highlight_indices=[i, selection_key])
+            selection_key = None 
+            canvas.after(speed, lambda: selection_step(i + 1, i + 2))
+
+
 def faster():
     global speed
     if speed > 5:
@@ -168,6 +205,9 @@ def continueSort():
         bubble_step(current_i, current_j)
     elif selected_algo.get() == "Insertion":
         insertion_step(current_i, current_j)
+    elif selected_algo.get() == "Selection":
+        selection_step(current_i, current_j)
+
 
 def switch():
     if sort_button["state"] == NORMAL:
@@ -178,10 +218,11 @@ def switch():
 
 
 def reset():
-    global barHeight, is_reseted,is_paused, insertion_key
+    global barHeight, is_reseted,is_paused, insertion_key, selection_key
     is_reseted = True
     is_paused = True
     insertion_key = None
+    selection_key = None
 
     reset_button["state"] = DISABLED
     generate_button["state"] = NORMAL
@@ -213,7 +254,7 @@ sort_button.pack(side=LEFT, padx=5)
 selected_algo = StringVar()
 selected_algo.set("Bubble")
 
-algo_menu = OptionMenu(main_frame, selected_algo, "Bubble", "Insertion")
+algo_menu = OptionMenu(main_frame, selected_algo, "Bubble", "Insertion", "Selection")
 algo_menu.pack(side=LEFT, padx=5)
 
 button_frame = Frame(win)
